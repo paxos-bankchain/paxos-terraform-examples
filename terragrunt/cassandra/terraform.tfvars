@@ -8,8 +8,7 @@ terragrunt = {
   # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
   # working directory, into a temporary folder, and execute your Terraform commands in that folder.
   terraform {
-    #source = "git@github.com:paxos-bankchain/terraform-example.git//cassandra"
-    source = "../../terraform/cassandra"
+    source = "git@github.com:paxos-bankchain/terraform-examples.git//cassandra"
   }
 
   dependencies {

@@ -37,7 +37,7 @@ data "terraform_remote_state" "iam" {
 }
 
 module "vpc_data" {
-  source         = "git@github.com:paxos-bankchain/terraform-example.git//helpers/vpc-data"
+  source         = "git@github.com:paxos-bankchain/terraform-examples.git//helpers/vpc-data"
   aws_profile    = "${var.aws_profile}"
   tfstate_bucket = "${var.tfstate_bucket}"
   tfstate_key    = "${var.vpc_tfstate_key}"
@@ -45,7 +45,7 @@ module "vpc_data" {
 }
 
 module "cassandra_packer_build" {
-  source = "git@github.com:paxos-bankchain/terraform-example.git//helpers/packer"
+  source = "git@github.com:paxos-bankchain/terraform-examples.git//helpers/packer"
   ami_name = "cassandra-${var.cassandra_ami_version}"
   aws_profile = "${var.aws_profile}"
   aws_region = "${var.aws_region}"
