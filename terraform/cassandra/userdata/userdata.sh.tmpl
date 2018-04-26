@@ -1,0 +1,35 @@
+#!/bin/bash
+
+AWS_METADATA_IP=169.254.169.254
+export AWS_DEFAULT_REGION="${region}"
+CASSANDRA_SERVER_NAME="${server_name}"
+BC_CASSANDRA_INITIAL_TOKEN="${initial_token}"
+BC_CASSANDRA_SEED1="${seed1}"
+BC_CASSANDRA_SEED2="${seed2}"
+BC_CASSANDRA_IP_SELF="${ip_self}"
+BC_ENV_NAME="${env_name}"
+ENI_NAME=cassandra_eni
+SELF_INSTANCE_ID=`curl http://"$${AWS_METADATA_IP}"/latest/meta-data/instance-id`
+
+# Register eni to this instance
+python /tmp/attach_eni.py "$${SELF_INSTANCE_ID}" "$${BC_ENV_NAME}" "$${ENI_NAME}"
+
+echo "Setting Server Name To $${CASSANDRA_SERVER_NAME}"
+echo "NETWORKING=yes
+HOSTNAME="$${CASSANDRA_SERVER_NAME}"
+NOZEROCONF=yes" > /etc/sysconfig/network
+
+
+echo "Setting server name in /etc/hosts"
+echo "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 "$${CASSANDRA_SERVER_NAME}"
+::1         localhost6 localhost6.localdomain6" > /etc/hosts
+
+echo "Setting IP parameters"
+sed -i s/BC_CASSANDRA_INITIAL_TOKEN/"$${BC_CASSANDRA_INITIAL_TOKEN}"/g /etc/cassandra/conf/cassandra.yaml
+sed -i s/BC_CASSANDRA_SEED1/"$${BC_CASSANDRA_SEED1}"/g /etc/cassandra/conf/cassandra.yaml
+sed -i s/BC_CASSANDRA_SEED2/"$${BC_CASSANDRA_SEED2}"/g /etc/cassandra/conf/cassandra.yaml
+sed -i s/BC_CASSANDRA_IP_SELF/"$${BC_CASSANDRA_IP_SELF}"/g /etc/cassandra/conf/cassandra.yaml
+
+chkconfig cassandra on
+
+reboot

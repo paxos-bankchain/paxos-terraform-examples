@@ -1,0 +1,74 @@
+{
+  "min_packer_version": "0.12.0",
+  "variables": {
+    "consul_version": "1.0.0",
+    "consul_tag": "v0.1.0",
+
+    "ami_name": "",
+    "aws_profile": "",
+    "aws_region": "",
+    "vpc": "",
+    "subnet": "",
+    "builder_instance_type": "t2.medium"
+  },
+  "builders": [
+    {
+      "ami_name": "{{user `ami_name`}}",
+      "ami_description": "cassandra on amazon linux",
+
+      "type": "amazon-ebs",
+      "profile": "{{user `aws_profile`}}",
+      "region": "{{user `aws_region`}}",
+      "vpc_id": "{{user `vpc`}}",
+      "subnet_id": "{{user `subnet`}}",
+      "instance_type": "{{user `builder_instance_type`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "architecture": "x86_64",
+          "name": "*amzn-ami-hvm-*",
+          "block-device-mapping.volume-type": "gp2",
+          "root-device-type": "ebs"
+        },
+        "owners": [
+          "amazon"
+        ],
+        "most_recent": true
+      },
+      "ssh_username": "ec2-user"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "./cassandra.repo",
+      "destination": "/tmp"
+    },
+    {
+      "type": "file",
+      "source": "./cassandra.yaml",
+      "destination": "/tmp"
+    },
+    {
+      "type": "file",
+      "source": "../../../../scripts/attach_eni.py",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo pip install boto3",
+        "sudo mv /tmp/cassandra.repo /etc/yum.repos.d",
+        "sudo yum update -y",
+        "sudo yum -y install java-1.8.0",
+        "sudo yum -y remove java-1.7.0-openjdk",
+        "sudo yum -y install cassandra",
+        "sudo chown -R cassandra:cassandra /var/lib/cassandra/data",
+        "sudo chown -R cassandra:cassandra /var/lib/cassandra/commitlog",
+        "sudo chown -R cassandra:cassandra /var/lib/cassandra/saved_caches",
+        "sudo mv /etc/cassandra/conf/cassandra.yaml /etc/cassandra/conf/cassandra_bu.yaml",
+        "sudo mv /tmp/cassandra.yaml /etc/cassandra/conf/cassandra.yaml"
+      ]
+    }
+  ]
+}
