@@ -49,7 +49,7 @@ data "terraform_remote_state" "vpc" {
 # Hashing the .yaml amd .repo into the builder will ensure  a new image is built every time one of these changed.
 # If no image is built, the helper will just return the old image.
 module "cassandra_packer_build" {
-  source      = "git@github.com:paxos-bankchain/terraform-examples.git//terraform/helpers/packer?ref=shaibo/initial_example"
+  source      = "git@github.com:paxos-bankchain/terraform-examples.git//terraform/helpers/packer"
   ami_name    = "cassandra-ami-latest"
   aws_profile = "${var.aws_profile}"
   aws_region  = "${var.aws_region}"

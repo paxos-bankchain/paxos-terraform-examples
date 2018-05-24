@@ -43,7 +43,7 @@ resource "aws_iam_policy" "auto_attach" {
 }
 
 module "bastion" {
-  source             = "git@github.com:paxos-bankchain/terraform-examples.git//terraform/helpers/service-iam-role?ref=shaibo/initial_example"
+  source             = "git@github.com:paxos-bankchain/terraform-examples.git//terraform/helpers/service-iam-role"
   name               = "bastion"
   resource_prefix    = "${local.resource_prefix}"
   extra_policy_count = 0
@@ -51,7 +51,7 @@ module "bastion" {
 
 # Service roles.
 module "cassandra" {
-  source             = "git@github.com:paxos-bankchain/terraform-examples.git//terraform/helpers/service-iam-role?ref=shaibo/initial_example"
+  source             = "git@github.com:paxos-bankchain/terraform-examples.git//terraform/helpers/service-iam-role"
   name               = "cassandra"
   resource_prefix    = "${local.resource_prefix}"
   extra_policy_count = 1
