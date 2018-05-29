@@ -1,23 +1,35 @@
 # terraform-examples
-Examples for Cassandra Terraform Code
-
-This repo holds the variables needed to launch terraform modules in different environments.
-As an example, we're launching Cassandra in a test environment.
+Examples for Cassandra Terraform Code, where we're launching Cassandra in a test environment.
 
 You can find all Terragrunt documentation [here](https://github.com/gruntwork-io/terragrunt).
 This is [a great thread](https://github.com/gruntwork-io/terragrunt/issues/169) with FAQs and best practices.
 
 ## Set up your environment variables
 
-A realm can have several environments and is usually associated with either prod or non-prod accounts. 
+In Terragrunt, A realm can have several environments and is usually associated with either prod or non-prod accounts. 
 We chose 'test' as the environment and 'paxosdemo' as the realm.
 
-## Test Deploy Procedure
+## terraform - IAM / VPC
+These should run first (and therefore don't depend on anything in their Terragrunt) to setup the relevant VPC, subnets and iam profiles
 
-Note that if you want to use your local copy of the bankchain-terraform or common-terraform repo, you should pass `--terragrunt-source` to all terragrunt commands + deploy scripts below.
-All script paths below are relative to the repo root directory, but the scripts can be invoked from anywhere.
+## terraform - Bastion
+Although not mandatory, it is setup to allow access into the private VPC where Cassandra is set 
 
-## Deploy Process
+## terraform - Cassandra
+### main.tf
+This file orchestrates the various aspects of setting up Cassandra: creating a Packer build, setting up security groups and ENIs (which ensure the IP doesn't change between setups) and sets up three instances.
+### packer
+This section defines a packer build that gets executed with the packer helper, and creates a Cassandra image by installing 
+Java and Cassandra on a an AMI builder, copying the cassandra.yml file and creating a typical Cassandra instance image. 
+### userdata
+This section gets called once after an imaged instance has been launched, and its output can be monitored in `/var/log/cloud_init_output.log`. 
+The userdata script accepts parameters (such as instance IPs) and allows Cassandra to be configured once it is up. 
+
+## terragrunt 
+Terragrunt files typically reside in the same hierarchy as terraform. They contain a JSON that indicates the variable values they need to scrape and pass into the terraform code defined in "source"
+In our example, the entire setup sits under the 'test' hierarchy. 
+
+## Deployment Process
 1. cd to desired environment folder (in this example, test)
 2. run `terragrunt get` (please see note below about getting updated terraform files)
 3. run `terragrunt plan`
