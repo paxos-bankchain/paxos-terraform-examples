@@ -9,13 +9,13 @@ This is [a great thread](https://github.com/gruntwork-io/terragrunt/issues/169) 
 In Terragrunt, A realm can have several environments and is usually associated with either prod or non-prod accounts. 
 We chose 'test' as the environment and 'paxosdemo' as the realm.
 
-## terraform - IAM / VPC
+## Terraform - IAM / VPC
 These should run first (and therefore don't depend on anything in their Terragrunt) to setup the relevant VPC, subnets and iam profiles
 
-## terraform - Bastion
+## Terraform - Bastion
 Although not mandatory, it is setup to allow access into the private VPC where Cassandra is set 
 
-## terraform - Cassandra
+## Terraform - Cassandra
 ### main.tf
 This file orchestrates the various aspects of setting up Cassandra: creating a Packer build, setting up security groups and ENIs (which ensure the IP doesn't change between setups) and sets up three instances.
 ### packer
@@ -25,7 +25,7 @@ Java and Cassandra on a an AMI builder, copying the cassandra.yml file and creat
 This section gets called once after an imaged instance has been launched, and its output can be monitored in `/var/log/cloud_init_output.log`. 
 The userdata script accepts parameters (such as instance IPs) and allows Cassandra to be configured once it is up. 
 
-## terragrunt 
+## Terragrunt 
 Terragrunt files typically reside in the same hierarchy as terraform. They contain a JSON that indicates the variable values they need to scrape and pass into the terraform code defined in "source"
 In our example, the entire setup sits under the 'test' hierarchy. 
 
