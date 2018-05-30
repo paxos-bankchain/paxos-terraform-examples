@@ -8,7 +8,7 @@ terragrunt = {
       bucket         = "terraform.test.state"
       key            = "${path_relative_to_include()}/terraform.tfstate"
       region         = "us-east-1"
-      profile        = "shaipersonal"
+      profile        = "default"
     }
   }
 

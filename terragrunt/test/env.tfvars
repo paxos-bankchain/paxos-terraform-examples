@@ -2,7 +2,7 @@
 # where terraform_remote_state data sources are placed directly into the modules.
 # REALM LEVEL
 aws_region      = "eu-west-1"
-aws_profile     = "shaipersonal"
+aws_profile     = "default"
 
 tfstate_bucket = "terraform.test.state"
 tfstate_region = "us-east-1"
@@ -11,7 +11,4 @@ env_name        = "test"
 realm_name      = "paxosdemo"
 
 vpc_tfstate_key = "test/vpc/terraform.tfstate"
-ssh_key_name = "shai-test"
-
-# All AMI versions should be the same across the realm
-cassandra_ami_version = 1
+ssh_key_name = "key-name"
